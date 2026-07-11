@@ -6,7 +6,7 @@ const REFILL_THRESHOLD = 1;
 export class TopicQueue {
   constructor(apiKey, params) {
     this.apiKey = apiKey;
-    this.params = params; // { mode, purpose, specifyTopic }
+    this.params = params; // { mode, purpose }
     this.queue = [];
     this.refilling = null;
   }

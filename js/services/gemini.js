@@ -102,8 +102,8 @@ async function callGemini(apiKey, { contents, responseSchema }, attempt = 1) {
   }
 }
 
-export async function generateTopics(apiKey, { mode, purpose, specifyTopic }, count = 5) {
-  const prompt = buildTopicsPrompt({ mode, purpose, specifyTopic, count: mode === "specify" ? 1 : count });
+export async function generateTopics(apiKey, { mode, purpose }, count = 5) {
+  const prompt = buildTopicsPrompt({ mode, purpose, count });
 
   const result = await callGemini(apiKey, {
     contents: [{ role: "user", parts: [{ text: prompt }] }],

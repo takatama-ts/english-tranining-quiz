@@ -1,8 +1,6 @@
-export function buildTopicsPrompt({ mode, purpose, specifyTopic, count }) {
+export function buildTopicsPrompt({ mode, purpose, count }) {
   let instruction;
-  if (mode === "specify") {
-    instruction = `Return exactly 1 topic: category="${specifyTopic}". Provide a short one-line English hint clarifying the scope of that category.`;
-  } else if (mode === "auto") {
+  if (mode === "auto") {
     instruction = purpose
       ? `Generate ${count} distinct, varied vocabulary-category topics suited to an English learner whose goal is: "${purpose}". Mix general everyday categories with a few relevant to that goal.`
       : `Generate ${count} distinct, varied everyday vocabulary-category topics for an English learner.`;
