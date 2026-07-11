@@ -32,12 +32,18 @@ export function buildGradeSpeakingPrompt({ category, hint }) {
   return `You are grading a category-fluency English vocabulary exercise. The category is "${category}" (${hint}).
 The attached audio is the player speaking as many English words belonging to this category as possible within a time limit.
 
-First transcribe what the player said (as plain English text, "transcript" field).
+First transcribe verbatim what the player said (as plain English text, "transcript" field), including filler words and hesitations (e.g. "um", "uh", "well", "you know"). Do not clean these up.
+
 Then extract each distinct word/short phrase they said that is intended to belong to the category:
 - It counts as valid if it is a real, recognizable English word or common phrase that genuinely belongs to the category, even if pronunciation was imperfect but recognizable.
 - Treat duplicates as a single entry.
 - If invalid (not a real word, not in the category, or unintelligible), briefly explain why in Japanese.
 
-Then give a short, encouraging feedback comment in Japanese (2-3 sentences) about their performance and pronunciation, mentioning the count of valid words and one concrete tip.
+Then, based on listening to the actual audio, write a short, encouraging feedback comment in Japanese (2-4 sentences) covering:
+- Their overall performance: the count of valid words and one concrete tip for expanding vocabulary in this category.
+- A brief note on pronunciation clarity/accuracy, only if there's something worth pointing out (a specific sound, stress, or intonation issue, or genuinely clear pronunciation worth praising).
+- A brief note on filler words/hesitations ("um", "uh", "well", long pauses) ONLY if they were noticeably frequent or distracting — do not mention filler words at all if they were minimal or absent.
+
+Keep the whole feedback natural and concise; don't force every topic in if there's nothing notable to say about it.
 Respond only with JSON matching the schema. "score" should equal the number of valid words.`;
 }
