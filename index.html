@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Word Sprint — 英単語想起トレーニング</title>
+  <meta name="description" content="カテゴリーを見て制限時間内に英単語をできるだけ多く言う/書く、英語版「30秒で10種の花」トレーニングアプリ" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <div id="app" class="app"></div>
+
+  <template id="tpl-setup">
+    <section class="screen screen-setup">
+      <h1 class="app-title">Word Sprint</h1>
+      <p class="app-tagline">制限時間内にカテゴリーの英単語をできるだけ多く言おう・書こう</p>
+
+      <div class="field">
+        <label for="api-key">Gemini APIキー</label>
+        <input type="password" id="api-key" placeholder="AIza..." autocomplete="off" />
+        <p class="hint">
+          お持ちでない場合は <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener">Google AI Studio</a> で無料取得できます。キーはこの端末の localStorage にのみ保存され、Gemini APIへ直接送信されます。
+        </p>
+      </div>
+
+      <div class="field">
+        <span class="field-label">設問モード</span>
+        <div class="radio-group" id="question-mode-group">
+          <label class="radio-pill"><input type="radio" name="question-mode" value="specify" /> 指定</label>
+          <label class="radio-pill"><input type="radio" name="question-mode" value="auto" checked /> お任せ</label>
+          <label class="radio-pill"><input type="radio" name="question-mode" value="full-auto" /> 完全お任せ</label>
+        </div>
+      </div>
+
+      <div class="field" id="specify-field" hidden>
+        <label for="specify-topic">カテゴリを指定</label>
+        <input type="text" id="specify-topic" placeholder="例: kitchen items" />
+      </div>
+
+      <div class="field" id="purpose-field">
+        <label for="purpose-input">学習目的（任意）</label>
+        <div class="chip-group" id="purpose-chips">
+          <button type="button" class="chip" data-value="IT engineer">ITエンジニア</button>
+          <button type="button" class="chip" data-value="watching movies">映画視聴</button>
+          <button type="button" class="chip" data-value="studying abroad">留学</button>
+        </div>
+        <input type="text" id="purpose-input" placeholder="例: IT engineer" />
+      </div>
+
+      <div class="field">
+        <span class="field-label">入力モード</span>
+        <div class="radio-group" id="input-mode-group">
+          <label class="radio-pill"><input type="radio" name="input-mode" value="speaking" checked /> Speaking</label>
+          <label class="radio-pill"><input type="radio" name="input-mode" value="writing" /> Writing</label>
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="time-limit">制限時間（秒）</label>
+        <input type="number" id="time-limit" min="10" max="180" step="5" value="30" />
+      </div>
+
+      <p class="error-message" id="setup-error" hidden></p>
+
+      <button type="button" class="btn btn-primary btn-block" id="start-btn">開始</button>
+    </section>
+  </template>
+
+  <template id="tpl-topic">
+    <section class="screen screen-topic">
+      <p class="step-label">お題</p>
+      <div class="topic-card" id="topic-card">
+        <p class="topic-loading" id="topic-loading">お題を考えています…</p>
+        <h2 class="topic-category" id="topic-category" hidden></h2>
+        <p class="topic-hint" id="topic-hint" hidden></p>
+      </div>
+      <p class="error-message" id="topic-error" hidden></p>
+      <div class="btn-row">
+        <button type="button" class="btn btn-secondary" id="reload-btn" hidden>🔄 リロード</button>
+        <button type="button" class="btn btn-primary" id="decide-btn" disabled>この お題で決定</button>
+      </div>
+      <button type="button" class="btn btn-text" id="topic-back-btn">設定に戻る</button>
+    </section>
+  </template>
+
+  <template id="tpl-answer">
+    <section class="screen screen-answer">
+      <p class="step-label">回答中</p>
+      <h2 class="answer-category" id="answer-category"></h2>
+      <p class="answer-hint" id="answer-hint"></p>
+
+      <div class="timer-wrap">
+        <div class="timer-bar"><div class="timer-bar-fill" id="timer-fill"></div></div>
+        <span class="timer-text" id="timer-text">30</span>
+      </div>
+
+      <div id="answer-writing" class="answer-input" hidden>
+        <textarea id="writing-input" rows="5" placeholder="単語をカンマ区切りで入力 (例: rose, tulip, lily)"></textarea>
+        <p class="word-count"><span id="word-count">0</span> 語</p>
+      </div>
+
+      <div id="answer-speaking" class="answer-input" hidden>
+        <button type="button" class="btn btn-record" id="record-btn">🎙️ 録音開始</button>
+        <p class="record-status" id="record-status">待機中</p>
+        <p class="error-message" id="mic-error" hidden></p>
+      </div>
+
+      <p class="error-message" id="answer-error" hidden></p>
+
+      <button type="button" class="btn btn-primary btn-block" id="submit-btn">送信する</button>
+    </section>
+  </template>
+
+  <template id="tpl-result">
+    <section class="screen screen-result">
+      <p class="step-label">結果</p>
+      <div class="score-card">
+        <span class="score-number" id="score-number">0</span>
+        <span class="score-label">語 正解</span>
+      </div>
+
+      <div id="transcript-block" class="transcript-block" hidden>
+        <h3>文字起こし</h3>
+        <p id="transcript-text"></p>
+        <audio id="answer-audio" controls hidden></audio>
+      </div>
+
+      <div class="word-lists">
+        <div class="word-list valid">
+          <h3>✅ 正解した単語</h3>
+          <ul id="valid-words"></ul>
+        </div>
+        <div class="word-list invalid">
+          <h3>❌ 惜しい単語</h3>
+          <ul id="invalid-words"></ul>
+        </div>
+      </div>
+
+      <div class="feedback-card">
+        <h3>コメント</h3>
+        <p id="feedback-text"></p>
+      </div>
+
+      <p class="error-message" id="result-error" hidden></p>
+
+      <div class="btn-row">
+        <button type="button" class="btn btn-primary" id="retry-btn">もう一度</button>
+        <button type="button" class="btn btn-secondary" id="settings-btn">設定に戻る</button>
+      </div>
+    </section>
+  </template>
+
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>
