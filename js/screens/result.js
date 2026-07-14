@@ -11,6 +11,7 @@ export function render(root, goTo) {
   const validListEl = root.querySelector("#valid-words");
   const invalidListEl = root.querySelector("#invalid-words");
   const feedbackText = root.querySelector("#feedback-text");
+  const feedbackTextEn = root.querySelector("#feedback-text-en");
   const retryBtn = root.querySelector("#retry-btn");
   const settingsBtn = root.querySelector("#settings-btn");
 
@@ -52,6 +53,7 @@ export function render(root, goTo) {
   }
 
   feedbackText.textContent = result.feedback || "";
+  feedbackTextEn.textContent = result.feedbackEn || "";
 
   if (state.settings.inputMode === "speaking") {
     transcriptBlock.hidden = false;

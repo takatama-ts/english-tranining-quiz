@@ -41,8 +41,9 @@ const GRADE_SCHEMA = {
     },
     score: { type: "integer" },
     feedback: { type: "string" },
+    feedbackEn: { type: "string" },
   },
-  required: ["validWords", "invalidWords", "score", "feedback"],
+  required: ["validWords", "invalidWords", "score", "feedback", "feedbackEn"],
 };
 
 const GRADE_SPEAKING_SCHEMA = {

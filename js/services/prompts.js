@@ -26,7 +26,8 @@ For each distinct word ABOVE (and ONLY those words — do not add, suggest, or i
 - If invalid, briefly explain why in Japanese (e.g. "カテゴリに合わない", "英単語として認識できません").
 IMPORTANT: The combined number of entries in "validWords" and "invalidWords" must equal the number of distinct words in the list above — no more, no fewer.
 
-Then give a short, encouraging feedback comment in Japanese (2-3 sentences) about their performance, mentioning the count of valid words and one concrete tip for expanding vocabulary in this category.
+Then give a short, encouraging feedback comment in Japanese (2-3 sentences) about their performance, mentioning the count of valid words and one concrete tip for expanding vocabulary in this category. Put this in "feedback".
+Also provide "feedbackEn": a natural English rendering of that same feedback (same content and tone, not a stiff word-for-word translation) so the learner can compare the Japanese and English side by side.
 Respond only with JSON matching the schema. "score" should equal the number of valid words.`;
 }
 
@@ -46,6 +47,7 @@ Then, based on listening to the actual audio, write a short, encouraging feedbac
 - A brief note on pronunciation clarity/accuracy, only if there's something worth pointing out (a specific sound, stress, or intonation issue, or genuinely clear pronunciation worth praising).
 - A brief note on filler words/hesitations ("um", "uh", "well", long pauses) ONLY if they were noticeably frequent or distracting — do not mention filler words at all if they were minimal or absent.
 
-Keep the whole feedback natural and concise; don't force every topic in if there's nothing notable to say about it.
+Keep the whole feedback natural and concise; don't force every topic in if there's nothing notable to say about it. Put this in "feedback".
+Also provide "feedbackEn": a natural English rendering of that same feedback (same content and tone, not a stiff word-for-word translation) so the learner can compare the Japanese and English side by side.
 Respond only with JSON matching the schema. "score" should equal the number of valid words.`;
 }

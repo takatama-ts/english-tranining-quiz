@@ -105,7 +105,7 @@ export function render(root, goTo) {
     errorEl.textContent = msg;
   }
 
-  const EXAMPLE_WORD_INTERVAL_MS = 2000;
+  const EXAMPLE_WORD_INTERVAL_MS = 3000;
   let exampleRotationId = null;
 
   function startExampleRotation() {
