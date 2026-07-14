@@ -105,17 +105,38 @@ export function render(root, goTo) {
     errorEl.textContent = msg;
   }
 
+  const EXAMPLE_WORD_INTERVAL_MS = 2000;
+  let exampleRotationId = null;
+
+  function startExampleRotation() {
+    if (!topic.exampleWords?.length) return;
+    let index = 0;
+    exampleWordsText.textContent = topic.exampleWords[index];
+    exampleWordsBlock.hidden = false;
+    exampleRotationId = setInterval(() => {
+      index = (index + 1) % topic.exampleWords.length;
+      exampleWordsText.textContent = topic.exampleWords[index];
+    }, EXAMPLE_WORD_INTERVAL_MS);
+  }
+
+  function stopExampleRotation() {
+    if (exampleRotationId) {
+      clearInterval(exampleRotationId);
+      exampleRotationId = null;
+    }
+    exampleWordsBlock.hidden = true;
+  }
+
   function setBusy(busy) {
     submitBtn.disabled = busy;
     submitBtn.textContent = busy ? "採点中…" : "送信する";
     writingInput.disabled = busy;
     recordBtn.disabled = busy;
 
-    if (busy && topic.exampleWords?.length) {
-      exampleWordsText.textContent = topic.exampleWords.join(", ");
-      exampleWordsBlock.hidden = false;
+    if (busy) {
+      startExampleRotation();
     } else {
-      exampleWordsBlock.hidden = true;
+      stopExampleRotation();
     }
   }
 
@@ -170,6 +191,7 @@ export function render(root, goTo) {
 
   return () => {
     stopTimer();
+    stopExampleRotation();
     if (recorder && recorder.isRecording()) {
       recorder.stop();
     }

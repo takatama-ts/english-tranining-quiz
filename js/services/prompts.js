@@ -16,14 +16,15 @@ Respond only with JSON matching the schema.`;
 
 export function buildGradeWritingPrompt({ category, hint, words }) {
   return `You are grading a category-fluency English vocabulary exercise. The category is "${category}" (${hint}).
-The player listed the following words, separated by commas, within a time limit:
+The player listed the following ${words.length} word(s), separated by commas, within a time limit:
 ${words.join(", ")}
 
-For each distinct word:
+For each distinct word ABOVE (and ONLY those words — do not add, suggest, or invent any word that is not in this exact list, even if it would be a valid category member):
 - It counts as valid if it is a real English word (or common English phrase) that genuinely belongs to the category.
 - Ignore casing and minor typos when clearly recognizable, but correct them in the output word.
 - Treat duplicates as a single entry.
 - If invalid, briefly explain why in Japanese (e.g. "カテゴリに合わない", "英単語として認識できません").
+IMPORTANT: The combined number of entries in "validWords" and "invalidWords" must equal the number of distinct words in the list above — no more, no fewer.
 
 Then give a short, encouraging feedback comment in Japanese (2-3 sentences) about their performance, mentioning the count of valid words and one concrete tip for expanding vocabulary in this category.
 Respond only with JSON matching the schema. "score" should equal the number of valid words.`;
@@ -35,7 +36,7 @@ The attached audio is the player speaking as many English words belonging to thi
 
 First transcribe verbatim what the player said (as plain English text, "transcript" field), including filler words and hesitations (e.g. "um", "uh", "well", "you know"). Do not clean these up.
 
-Then extract each distinct word/short phrase they said that is intended to belong to the category:
+Then extract each distinct word/short phrase they ACTUALLY said in the audio that is intended to belong to the category. Only include words you can clearly hear them say — do NOT add, suggest, or invent any word that fits the category but was not actually spoken, even if it seems like an obvious omission. If you are not confident a word was really said, leave it out rather than guess.
 - It counts as valid if it is a real, recognizable English word or common phrase that genuinely belongs to the category, even if pronunciation was imperfect but recognizable.
 - Treat duplicates as a single entry.
 - If invalid (not a real word, not in the category, or unintelligible), briefly explain why in Japanese.
