@@ -15,8 +15,9 @@ const TOPICS_SCHEMA = {
         properties: {
           category: { type: "string" },
           hint: { type: "string" },
+          exampleWords: { type: "array", items: { type: "string" } },
         },
-        required: ["category", "hint"],
+        required: ["category", "hint", "exampleWords"],
       },
     },
   },

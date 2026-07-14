@@ -327,6 +327,21 @@ textarea {
   text-align: right;
 }
 
+.example-words {
+  background: var(--color-surface);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 14px;
+  animation: fade-in 0.2s ease;
+}
+
+.example-words p {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--color-text-muted);
+}
+
 .answer-input {
   display: flex;
   flex-direction: column;

@@ -10,6 +10,7 @@ export function buildTopicsPrompt({ mode, purpose, count }) {
 
   return `You are generating topics for a category-fluency English vocabulary game, similar to the "name 10 flowers in 30 seconds" exercise used for cognitive/language fluency training. The player must list as many English words belonging to one category as possible within a time limit. ${instruction}
 Each topic's category should be a short noun phrase (e.g. "Fruits", "Kitchen utensils", "Things found in an office"), broad enough to have at least 15 valid English words, and its hint should be a one-line clarification in English of what counts.
+Also include "exampleWords": an array of 6 valid example words/short phrases for that category, to be shown to the player only AFTER they submit their answer (as bonus learning material, not a hint beforehand) — so pick words that are illustrative and useful to learn, not necessarily the most obvious ones.
 Respond only with JSON matching the schema.`;
 }
 

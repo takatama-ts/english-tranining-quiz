@@ -22,6 +22,8 @@ export function render(root, goTo) {
   const recordStatus = root.querySelector("#record-status");
   const micErrorEl = root.querySelector("#mic-error");
   const errorEl = root.querySelector("#answer-error");
+  const exampleWordsBlock = root.querySelector("#example-words-block");
+  const exampleWordsText = root.querySelector("#example-words-text");
   const submitBtn = root.querySelector("#submit-btn");
 
   const topic = state.currentTopic;
@@ -108,6 +110,13 @@ export function render(root, goTo) {
     submitBtn.textContent = busy ? "採点中…" : "送信する";
     writingInput.disabled = busy;
     recordBtn.disabled = busy;
+
+    if (busy && topic.exampleWords?.length) {
+      exampleWordsText.textContent = topic.exampleWords.join(", ");
+      exampleWordsBlock.hidden = false;
+    } else {
+      exampleWordsBlock.hidden = true;
+    }
   }
 
   async function finalizeAndSubmit() {
